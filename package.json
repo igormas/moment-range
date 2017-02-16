@@ -27,7 +27,7 @@
   "homepage": "https://github.com/gf3/moment-range",
   "bugs": "https://github.com/gf3/moment-range/issues",
   "main": "./dist/moment-range",
-  "types": "./dist/moment-range.d.ts",
+  "types": "./lib/moment-range.d.ts",
   "module": "lib/moment-range.js",
   "version": "3.0.2",
   "engines": {
