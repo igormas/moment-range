@@ -1,8 +1,11 @@
-import moment = require('moment');
+import * as moment from 'moment';
 
-export type Shorthand = 'years' | 'quarters' | 'months' | 'weeks' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds';
+declare type Shorthand = 'years' | 'quarters' | 'months' | 'weeks' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds';
 
-export declare class DateRange {
+declare class DateRange {
+    start: moment.Moment;
+    end: moment.Moment;
+
     constructor(start: Date, end: Date);
     constructor(start: moment.Moment, end: moment.Moment);
     constructor(range: [Date, Date]);
@@ -13,15 +16,15 @@ export declare class DateRange {
 
     add(other: DateRange): DateRange;
 
-    by(interval: Shorthand, options?: { exclusive: boolean; step: number; }): Iterable<moment.Moment>;
+    by(interval: Shorthand, options?: {exclusive: boolean; step: number;}): Iterable<moment.Moment>;
 
-    byRange(interval: DateRange, options?: { exclusive: boolean; step: number; }): Iterable<moment.Moment>;
+    byRange(interval: DateRange, options?: {exclusive: boolean; step: number;}): Iterable<moment.Moment>;
 
     center(): moment.Moment;
 
     clone(): DateRange;
 
-    contains(other: Date | DateRange | moment.Moment, options?: { exclusive: boolean; }): boolean;
+    contains(other: Date | DateRange | moment.Moment, options?: {exclusive: boolean;}): boolean;
 
     diff(unit: Shorthand, rounded: boolean): number;
 
@@ -33,11 +36,11 @@ export declare class DateRange {
 
     isSame(other: DateRange): boolean;
 
-    overlaps(other: DateRange, options: { adjacent: boolean; }): boolean;
+    overlaps(other: DateRange, options: {adjacent: boolean;}): boolean;
 
-    reverseBy(interval: Shorthand, options?: { exclusive: boolean; step: number; }): Iterable<moment.Moment>;
+    reverseBy(interval: Shorthand, options?: {exclusive: boolean; step: number;}): Iterable<moment.Moment>;
 
-    reverseByRange(interval: DateRange, options?: { exclusive: boolean; step: number; }): Iterable<moment.Moment>;
+    reverseByRange(interval: DateRange, options?: {exclusive: boolean; step: number;}): Iterable<moment.Moment>;
 
     subtract(other: DateRange): Array<DateRange>;
 
@@ -48,16 +51,17 @@ export declare class DateRange {
     valueOf(): number;
 }
 
+declare function extendMoment<T>(moment: T): T;
+
 declare module 'moment' {
     interface Moment {
+        within(range): boolean;
         range(start: Date, end: Date): DateRange;
         range(start: Moment, end: Moment): DateRange;
-        range(range: Date[]): DateRange;
-        range(range: Moment[]): DateRange;
-        range(range: string): DateRange;
-
-        within(range): boolean;
+        range(range: Moment[] | Date[] | string): DateRange;
     }
-}
 
-export declare function extendMoment(moment: moment) : moment;
+    export function range(start: Date, end: Date): DateRange;
+    export function range(start: Moment, end: Moment): DateRange;
+    export function range(range: Moment[] | Date[] | string): DateRange;
+}

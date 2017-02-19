@@ -27,7 +27,7 @@
   "homepage": "https://github.com/gf3/moment-range",
   "bugs": "https://github.com/gf3/moment-range/issues",
   "main": "./dist/moment-range",
-  "types": "./lib/moment-range.d.ts",
+  "types": "./dist/moment-range.d.ts",
   "module": "lib/moment-range.js",
   "version": "3.0.2",
   "engines": {
@@ -45,7 +45,7 @@
     "prepublish": "npm run build; cp ./declarations/moment-range.js.flow ./dist",
     "preversion": "npm run flow && npm run lint && npm run test",
     "test": "karma start ./karma.conf.js",
-    "version": "npm run build; cp ./declarations/moment-range.js.flow ./dist"
+    "version": "npm run build; cp ./declarations/moment-range.js.flow ./dist; cp ./lib/moment-range.d.ts ./dist"
   },
   "devDependencies": {
     "babel-core": "^6.18.2",
