@@ -1,67 +1,59 @@
 import * as moment from 'moment';
 
-declare type Shorthand = 'years' | 'quarters' | 'months' | 'weeks' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds';
-
-declare class DateRange {
+export class DateRange {
     start: moment.Moment;
     end: moment.Moment;
 
-    constructor(start: Date, end: Date);
-    constructor(start: moment.Moment, end: moment.Moment);
-    constructor(range: [Date, Date]);
-    constructor(range: [moment.Moment, moment.Moment]);
-    constructor(range: string);
+    constructor(range: string | Date[] | moment.Moment[]);
+    constructor(start: Date | moment.Moment, end: Date | moment.Moment);
 
-    adjacent(other: DateRange): boolean;
+    contains(other: DateRange | moment.Moment | Date, options?: { exclusive?: boolean }): boolean;
+
+    overlaps(range: DateRange, options?: { adjacent?: boolean }): boolean;
+
+    intersect(other: DateRange): DateRange;
 
     add(other: DateRange): DateRange;
 
-    by(interval: Shorthand, options?: {exclusive: boolean; step: number;}): Iterable<moment.Moment>;
+    subtract(other: DateRange): DateRange[];
 
-    byRange(interval: DateRange, options?: {exclusive: boolean; step: number;}): Iterable<moment.Moment>;
+    by(interval: moment.unitOfTime.Diff, options?: { exclusive?: boolean, step?: number }): Iterable<moment.Moment>;
+
+    byRange(interval: DateRange, options?: { exclusive?: boolean, step?: number }): Iterable<moment.Moment>;
+
+    isSame(other: DateRange): boolean;
+
+    diff(unit?: moment.unitOfTime.Diff, rounded?: boolean): number;
+
+    toDate(): Date[];
+
+    toString(): string;
+
+    valueOf(): number;
 
     center(): moment.Moment;
 
     clone(): DateRange;
 
-    contains(other: Date | DateRange | moment.Moment, options?: {exclusive: boolean;}): boolean;
-
-    diff(unit: Shorthand, rounded: boolean): number;
-
-    duration(unit: Shorthand, rounded: boolean): number;
-
-    intersect(other: DateRange): DateRange;
-
     isEqual(other: DateRange): boolean;
 
-    isSame(other: DateRange): boolean;
+    adjacent(other: DateRange): boolean;
 
-    overlaps(other: DateRange, options: {adjacent: boolean;}): boolean;
+    duration(unit?: moment.unitOfTime.Diff, precise?: boolean): number;
 
-    reverseBy(interval: Shorthand, options?: {exclusive: boolean; step: number;}): Iterable<moment.Moment>;
+    reverseBy(interval: moment.unitOfTime.Diff, options?: { exclusive?: boolean, step?: number }): Iterable<moment.Moment>;
 
-    reverseByRange(interval: DateRange, options?: {exclusive: boolean; step: number;}): Iterable<moment.Moment>;
-
-    subtract(other: DateRange): Array<DateRange>;
-
-    toDate(): Array<Date>;
-
-    toString(): string;
-
-    valueOf(): number;
+    reverseByRange(interval: DateRange, options?: { exclusive?: boolean, step?: number }): Iterable<moment.Moment>;
 }
 
-declare function extendMoment<T>(moment: T): T;
-
-declare module 'moment' {
-    interface Moment {
-        within(range): boolean;
-        range(start: Date, end: Date): DateRange;
-        range(start: Moment, end: Moment): DateRange;
-        range(range: Moment[] | Date[] | string): DateRange;
-    }
-
-    export function range(start: Date, end: Date): DateRange;
-    export function range(start: Moment, end: Moment): DateRange;
-    export function range(range: Moment[] | Date[] | string): DateRange;
+export interface MomentRangeMethods {
+    range(range: string | Date[] | moment.Moment[]): DateRange;
+    range(start: Date | moment.Moment, end: Date | moment.Moment): DateRange;
+    within(range: DateRange): boolean;
 }
+
+export interface MomentRangeExtends extends MomentRangeMethods {
+    (...args: any[]): MomentRangeMethods & moment.Moment;
+}
+
+export function extendMoment(momentInstance: moment.Moment | typeof moment): MomentRangeExtends & moment.Moment;
